@@ -27,6 +27,40 @@ public class TransaksiDAO {
         ps.setInt(3, transaksi.getJumlah());
         ps.setDate(4, new java.sql.Date(transaksi.getTanggal().getTime()));
         ps.executeUpdate();
+
+        // Update stok barang berdasarkan jenis transaksi
+        updateStokBarang(transaksi.getKodeBarang(), transaksi.getJenisTransaksi(), transaksi.getJumlah());
+    }
+
+    private void updateStokBarang(String kodeBarang, String jenisTransaksi, int jumlah) throws SQLException {
+        // Ambil stok barang saat ini
+        String queryGetStok = "SELECT stok FROM barang WHERE kode_barang = ?";
+        PreparedStatement psGet = connection.prepareStatement(queryGetStok);
+        psGet.setString(1, kodeBarang);
+        ResultSet rs = psGet.executeQuery();
+
+        int stokSekarang = 0;
+        if (rs.next()) {
+            stokSekarang = rs.getInt("stok");
+        }
+
+        // Hitung stok baru berdasarkan jenis transaksi
+        int stokBaru = stokSekarang;
+        if (jenisTransaksi.equalsIgnoreCase("Masuk")) {
+            stokBaru += jumlah;
+        } else if (jenisTransaksi.equalsIgnoreCase("Keluar")) {
+            stokBaru -= jumlah;
+            if (stokBaru < 0) { // Cegah stok negatif
+                throw new SQLException("Stok tidak mencukupi untuk transaksi keluar!");
+            }
+        }
+
+        // Update stok barang di database
+        String queryUpdateStok = "UPDATE barang SET stok = ? WHERE kode_barang = ?";
+        PreparedStatement psUpdate = connection.prepareStatement(queryUpdateStok);
+        psUpdate.setInt(1, stokBaru);
+        psUpdate.setString(2, kodeBarang);
+        psUpdate.executeUpdate();
     }
 
     public List<Transaksi> getAllTransaksi() throws SQLException {
@@ -63,6 +97,45 @@ public class TransaksiDAO {
         ));
     }
     return listLaporan;
-}
+    }
+  
+//untuk laporan transaksi tanggal tunggal(harian)
+    public List<Transaksi> getLaporanByTanggalTunggal(Date tanggal) throws SQLException {
+        List<Transaksi> list = new ArrayList<>();
+        String query = "SELECT * FROM transaksi WHERE DATE(tanggal) = ?";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setDate(1, new java.sql.Date(tanggal.getTime()));
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            list.add(new Transaksi(
+                    rs.getInt("id_transaksi"),
+                    rs.getString("jenis_transaksi"),
+                    rs.getString("kode_barang"),
+                    rs.getInt("jumlah"),
+                    rs.getDate("tanggal")
+            ));
+        }
+        return list;
+    }
+
+    //untuk laporan transaksi antar tanggal (dengan rentang waktu)
+    public List<Transaksi> getLaporanByRentangTanggal(Date tanggalAwal, Date tanggalAkhir) throws SQLException {
+        List<Transaksi> list = new ArrayList<>();
+        String query = "SELECT * FROM transaksi WHERE DATE(tanggal) BETWEEN ? AND ?";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setDate(1, new java.sql.Date(tanggalAwal.getTime()));
+        ps.setDate(2, new java.sql.Date(tanggalAkhir.getTime()));
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            list.add(new Transaksi(
+                    rs.getInt("id_transaksi"),
+                    rs.getString("jenis_transaksi"),
+                    rs.getString("kode_barang"),
+                    rs.getInt("jumlah"),
+                    rs.getDate("tanggal")
+            ));
+        }
+        return list;
+    }
 
 }

@@ -10,11 +10,16 @@ package aplikasigudang;
  */
 import aplikasigudang.model.Barang;
 import aplikasigudang.model.BarangDAO;
+import com.lowagie.text.Element;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.PdfWriter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -27,7 +32,17 @@ public class BarangFrame extends javax.swing.JFrame {
     public BarangFrame() {
         initComponents();
         setLocationRelativeTo(null); // Center the window
-    
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        
+        tblBarang.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && tblBarang.getSelectedRow() >= 0) {
+                int selectedRow = tblBarang.getSelectedRow();
+                txtKodeBarang.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                txtNamaBarang.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                txtStok.setText(tableModel.getValueAt(selectedRow, 2).toString());
+            }
+        });
+
       try {
         barangDAO = new BarangDAO(); // Inisialisasi BarangDAO
         tableModel = (DefaultTableModel) tblBarang.getModel(); // Ambil model tabel
@@ -56,6 +71,75 @@ private void clearInputFields() {
     txtNamaBarang.setText("");
     txtStok.setText("");
     txtKodeBarang.requestFocus(); // Fokuskan kembali ke kolom Kode Barang
+}
+
+//export pdf 
+private void saveToPDF() {
+    // Nama file PDF dengan format "Data Stok Gudang" + urutan
+    String baseFileName = "Data Stok Gudang";
+    int counter = 1;
+    String fileName = baseFileName + counter + ".pdf";
+    while (new java.io.File(fileName).exists()) {
+        counter++;
+        fileName = baseFileName + counter + ".pdf";
+    }
+
+    try {
+        // Membuat objek Document untuk PDF dengan ukuran halaman A4
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+
+        // Menghubungkan dokumen dengan FileOutputStream menggunakan PdfWriter
+        PdfWriter.getInstance(document, new FileOutputStream(fileName));
+
+        // Membuka dokumen untuk penulisan
+        document.open();
+
+        // Menambahkan judul ke PDF dengan font tebal dan ukuran 16
+        com.lowagie.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
+        com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("Laporan Data Stok Gudang", titleFont);
+        title.setAlignment(Element.ALIGN_CENTER); // Mengatur judul rata tengah
+        document.add(title);
+
+        // Menambahkan spasi sebelum tabel
+        document.add(new com.lowagie.text.Paragraph(" "));
+        document.add(new com.lowagie.text.Paragraph(" ")); // Spasi tambahan
+
+        // Membuat tabel dengan jumlah kolom sesuai dengan tabel
+        int columnCount = tblBarang.getColumnCount();
+        com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(columnCount);
+        table.setWidthPercentage(100); // Mengatur lebar tabel agar memenuhi halaman
+
+        // Menambahkan header ke tabel
+        for (int i = 0; i < columnCount; i++) {
+            com.lowagie.text.pdf.PdfPCell headerCell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(tblBarang.getColumnName(i)));
+            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Rata tengah untuk header
+            headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);  // Rata tengah vertikal
+            table.addCell(headerCell); // Menambahkan header ke tabel
+        }
+
+        // Menambahkan data dari `tblBarang` ke tabel PDF
+        for (int i = 0; i < tblBarang.getRowCount(); i++) { // Iterasi baris
+            for (int j = 0; j < columnCount; j++) { // Iterasi kolom
+                Object cellValue = tblBarang.getValueAt(i, j);
+                com.lowagie.text.pdf.PdfPCell dataCell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(cellValue == null ? "" : cellValue.toString()));
+                dataCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Rata tengah untuk data
+                dataCell.setVerticalAlignment(Element.ALIGN_MIDDLE);  // Rata tengah vertikal
+                table.addCell(dataCell); // Menambahkan data ke tabel
+            }
+        }
+
+        // Menambahkan tabel ke dokumen PDF
+        document.add(table);
+
+        // Menutup dokumen setelah selesai
+        document.close();
+
+        // Menampilkan pesan sukses
+        JOptionPane.showMessageDialog(this, "Laporan berhasil disimpan ke " + fileName, "Sukses", JOptionPane.INFORMATION_MESSAGE);
+    } catch (Exception e) {
+        // Menampilkan pesan error jika terjadi masalah saat menyimpan data
+        JOptionPane.showMessageDialog(this, "Error menyimpan laporan ke PDF: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
 }
 
 
@@ -90,18 +174,22 @@ private void clearInputFields() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
-        btnUpdate.setBackground(new java.awt.Color(153, 153, 153));
-        btnUpdate.setText("Update");
+        btnUpdate.setBackground(new java.awt.Color(51, 51, 51));
+        btnUpdate.setFont(new java.awt.Font("Imprint MT Shadow", 0, 18)); // NOI18N
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setText("Edit");
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
             }
         });
 
-        btnDelete.setBackground(new java.awt.Color(153, 153, 153));
-        btnDelete.setText("Delete");
+        btnDelete.setBackground(new java.awt.Color(51, 51, 51));
+        btnDelete.setFont(new java.awt.Font("Imprint MT Shadow", 0, 18)); // NOI18N
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setText("Hapus");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
@@ -110,7 +198,7 @@ private void clearInputFields() {
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Malgun Gothic", 2, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Imprint MT Shadow", 3, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Manajemen Barang");
 
@@ -118,64 +206,62 @@ private void clearInputFields() {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(268, 268, 268)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(260, 260, 260))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(15, 15, 15))
         );
 
-        jPanel3.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel3.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Masukkan Data Disini", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("sansserif", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
+        jLabel2.setFont(new java.awt.Font("Imprint MT Shadow", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Kode Barang");
 
+        jLabel3.setFont(new java.awt.Font("Imprint MT Shadow", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Nama Barang");
 
+        jLabel4.setFont(new java.awt.Font("Imprint MT Shadow", 0, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Stok");
 
-        txtKodeBarang.setText("jTextField1");
         txtKodeBarang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtKodeBarangActionPerformed(evt);
             }
         });
 
-        txtNamaBarang.setText("jTextField2");
-
-        txtStok.setText("jTextField3");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(120, 120, 120)
-                        .addComponent(jLabel4))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(96, 96, 96)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel2)
-                                .addComponent(txtKodeBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtNamaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(txtStok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(jLabel3)
+                    .addComponent(txtKodeBarang, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                    .addComponent(txtStok)
+                    .addComponent(txtNamaBarang)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel2))
                 .addContainerGap(109, Short.MAX_VALUE))
         );
+
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txtKodeBarang, txtNamaBarang, txtStok});
+
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
+                .addGap(58, 58, 58)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtKodeBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -183,14 +269,16 @@ private void clearInputFields() {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtNamaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4)
+                .addGap(12, 12, 12)
                 .addComponent(txtStok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addContainerGap(64, Short.MAX_VALUE))
         );
 
-        btnAdd.setBackground(new java.awt.Color(153, 153, 153));
+        btnAdd.setBackground(new java.awt.Color(51, 51, 51));
+        btnAdd.setFont(new java.awt.Font("Imprint MT Shadow", 0, 18)); // NOI18N
+        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
         btnAdd.setText("Tambah");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -213,8 +301,15 @@ private void clearInputFields() {
         ));
         jScrollPane1.setViewportView(tblBarang);
 
-        btnCetak.setBackground(new java.awt.Color(153, 153, 153));
+        btnCetak.setBackground(new java.awt.Color(51, 51, 51));
+        btnCetak.setFont(new java.awt.Font("Imprint MT Shadow", 0, 18)); // NOI18N
+        btnCetak.setForeground(new java.awt.Color(255, 255, 255));
         btnCetak.setText("Cetak");
+        btnCetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCetakActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -224,44 +319,39 @@ private void clearInputFields() {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCetak, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnAdd))
-                    .addComponent(btnCetak))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnCetak, btnDelete});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAdd, btnCetak, btnDelete, btnUpdate});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnAdd)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnUpdate)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnDelete)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnCetak)
-                                .addGap(71, 71, 71))))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(85, 85, 85)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(18, Short.MAX_VALUE))
+                        .addGap(100, 100, 100)
+                        .addComponent(btnAdd)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUpdate)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDelete)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCetak)))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -279,27 +369,63 @@ private void clearInputFields() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-      try {
-        int selectedRow = tblBarang.getSelectedRow(); // Ambil baris yang dipilih
-        if (selectedRow >= 0) {
+        try {
+            // Cek apakah baris tabel dipilih
+            int selectedRow = tblBarang.getSelectedRow();
+            if (selectedRow < 0) {
+                JOptionPane.showMessageDialog(this, "Pilih baris data yang ingin dihapus!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Ambil kode barang dari baris yang dipilih
             String kodeBarang = tableModel.getValueAt(selectedRow, 0).toString();
-            barangDAO.hapusBarang(kodeBarang); // Hapus barang dari database
-            loadBarang(); // Perbarui data di tabel
-            clearInputFields(); // Bersihkan input
-        } else {
-            JOptionPane.showMessageDialog(this, "Pilih baris yang akan dihapus!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-        }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }    // TODO add your handling code here:
+
+            // Tampilkan dialog konfirmasi
+            int response = JOptionPane.showConfirmDialog(this, 
+                    "Apakah Anda yakin ingin menghapus data dengan kode barang: " + kodeBarang + "?",
+                    "Konfirmasi Hapus",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+
+            // Jika pengguna memilih "Yes", lanjutkan penghapusan
+            if (response == JOptionPane.YES_OPTION) {
+                barangDAO.hapusBarang(kodeBarang); // Hapus barang dari database
+                loadBarang(); // Perbarui data di tabel
+                clearInputFields(); // Bersihkan input
+                JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }    // TODO add your handling code here:
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-      try {
-        Barang barang = new Barang(0, txtKodeBarang.getText(), txtNamaBarang.getText(), Integer.parseInt(txtStok.getText()));
-        barangDAO.updateBarang(barang); // Perbarui barang di database
-        loadBarang(); // Perbarui data di tabel
+        try {
+        int selectedRow = tblBarang.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Pilih baris data yang ingin diubah!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String kodeBarang = txtKodeBarang.getText();
+        String namaBarang = txtNamaBarang.getText();
+        String stokStr = txtStok.getText();
+
+        if (kodeBarang.isEmpty() || namaBarang.isEmpty() || stokStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Semua kolom harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int stok = Integer.parseInt(stokStr);
+
+        Barang barang = new Barang(0, kodeBarang, namaBarang, stok);
+        barangDAO.updateBarang(barang); // Panggil DAO untuk update
+        loadBarang(); // Refresh tabel
         clearInputFields(); // Bersihkan input
+
+        JOptionPane.showMessageDialog(this, "Data berhasil diperbarui!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Stok harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }    // TODO add your handling code here:
@@ -310,15 +436,39 @@ private void clearInputFields() {
     }//GEN-LAST:event_txtKodeBarangActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-    try {
-        Barang barang = new Barang(0, txtKodeBarang.getText(), txtNamaBarang.getText(), Integer.parseInt(txtStok.getText()));
-        barangDAO.tambahBarang(barang); // Tambahkan barang ke database
-        loadBarang(); // Perbarui data di tabel
-        clearInputFields(); // Bersihkan input
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }        // TODO add your handling code here:
+        try {
+            String kodeBarang = txtKodeBarang.getText();
+            String namaBarang = txtNamaBarang.getText();
+            String stokStr = txtStok.getText();
+
+            // Validasi input
+            if (kodeBarang.isEmpty() || namaBarang.isEmpty() || stokStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Semua kolom harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int stok = Integer.parseInt(stokStr); // Konversi stok ke integer
+
+            // Tambahkan barang menggunakan DAO
+            Barang barang = new Barang(0, kodeBarang, namaBarang, stok);
+            barangDAO.tambahBarang(barang);
+
+            // Refresh tabel dan bersihkan input
+            loadBarang();
+            clearInputFields();
+
+            // Tampilkan pesan sukses
+            JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Stok harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
+        saveToPDF(); // TODO add your handling code here:
+    }//GEN-LAST:event_btnCetakActionPerformed
 
     /**
      * @param args the command line arguments

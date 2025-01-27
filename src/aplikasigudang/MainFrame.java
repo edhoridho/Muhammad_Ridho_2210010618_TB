@@ -26,6 +26,7 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jToggleButton1 = new javax.swing.JToggleButton();
         jPanel1 = new javax.swing.JPanel();
         btnBarangFrame = new javax.swing.JButton();
         btnTransaksiFrame = new javax.swing.JButton();
@@ -33,11 +34,15 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
+        jToggleButton1.setText("jToggleButton1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
-        btnBarangFrame.setBackground(new java.awt.Color(153, 153, 153));
+        btnBarangFrame.setBackground(new java.awt.Color(51, 51, 51));
+        btnBarangFrame.setFont(new java.awt.Font("Imprint MT Shadow", 0, 24)); // NOI18N
+        btnBarangFrame.setForeground(new java.awt.Color(255, 255, 255));
         btnBarangFrame.setText("Barang");
         btnBarangFrame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -45,7 +50,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        btnTransaksiFrame.setBackground(new java.awt.Color(153, 153, 153));
+        btnTransaksiFrame.setBackground(new java.awt.Color(51, 51, 51));
+        btnTransaksiFrame.setFont(new java.awt.Font("Imprint MT Shadow", 0, 24)); // NOI18N
+        btnTransaksiFrame.setForeground(new java.awt.Color(255, 255, 255));
         btnTransaksiFrame.setText("Transaksi");
         btnTransaksiFrame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -53,7 +60,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        btnLaporanFrame.setBackground(new java.awt.Color(153, 153, 153));
+        btnLaporanFrame.setBackground(new java.awt.Color(51, 51, 51));
+        btnLaporanFrame.setFont(new java.awt.Font("Imprint MT Shadow", 0, 24)); // NOI18N
+        btnLaporanFrame.setForeground(new java.awt.Color(255, 255, 255));
         btnLaporanFrame.setText("Laporan");
         btnLaporanFrame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -63,7 +72,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Malgun Gothic", 2, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Imprint MT Shadow", 3, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("My Thrift Store");
 
@@ -73,8 +82,8 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(276, 276, 276)
-                .addComponent(jLabel1)
-                .addContainerGap(287, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(275, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -88,14 +97,14 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(297, 297, 297)
+                .addGap(271, 271, 271)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnLaporanFrame)
                     .addComponent(btnTransaksiFrame)
                     .addComponent(btnBarangFrame))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnBarangFrame, btnLaporanFrame, btnTransaksiFrame});
@@ -104,14 +113,16 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62)
+                .addGap(63, 63, 63)
                 .addComponent(btnBarangFrame)
                 .addGap(46, 46, 46)
                 .addComponent(btnTransaksiFrame)
                 .addGap(50, 50, 50)
                 .addComponent(btnLaporanFrame)
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnBarangFrame, btnLaporanFrame, btnTransaksiFrame});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -181,5 +192,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 }

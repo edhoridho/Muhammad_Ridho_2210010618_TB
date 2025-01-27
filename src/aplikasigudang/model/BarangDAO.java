@@ -37,6 +37,7 @@ public class BarangDAO {
         ps.executeUpdate();
     }
 
+
     public void hapusBarang(String kodeBarang) throws SQLException {
         String query = "DELETE FROM barang WHERE kode_barang = ?";
         PreparedStatement ps = connection.prepareStatement(query);

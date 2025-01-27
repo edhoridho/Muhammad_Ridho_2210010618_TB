@@ -15,10 +15,11 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaulttblReport;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
 
 /**
@@ -33,6 +34,8 @@ public class LaporanFrame extends javax.swing.JFrame {
      */
     public LaporanFrame() {
         initComponents();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
         try {
         transaksiDAO = new TransaksiDAO(); // Inisialisasi DAO
     } catch (Exception e) {
@@ -41,7 +44,7 @@ public class LaporanFrame extends javax.swing.JFrame {
     }
 
 private void loadLaporanToTable(List<Transaksi> laporan) {
-    DefaulttblReport model = (DefaulttblReport) tblReport.getModel();
+    DefaultTableModel model = (DefaultTableModel) tblReport.getModel();
     model.setRowCount(0); // Bersihkan tabel
     for (Transaksi transaksi : laporan) {
         model.addRow(new Object[]{
@@ -53,6 +56,9 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
         });
     }
 }
+
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -74,18 +80,20 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
         btnReport = new javax.swing.JButton();
         btnExportPDF = new javax.swing.JButton();
         btnExcel = new javax.swing.JButton();
+        dcTanggalTunggal = new com.toedter.calendar.JDateChooser();
+        jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblReport = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Malgun Gothic", 2, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Imprint MT Shadow", 3, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("My Thrift Store");
+        jLabel1.setText("Reporting");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -93,8 +101,8 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(332, 332, 332)
-                .addComponent(jLabel1)
-                .addContainerGap(332, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(367, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,19 +112,30 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
                 .addGap(14, 14, 14))
         );
 
+        btnExportExcel.setBackground(new java.awt.Color(102, 102, 102));
+        btnExportExcel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Masukkan Data Disini", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("sansserif", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+
+        jLabel2.setFont(new java.awt.Font("Imprint MT Shadow", 1, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Tanggal Awal");
 
+        jLabel3.setFont(new java.awt.Font("Imprint MT Shadow", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Tanggal Akhir");
 
-        btnReport.setBackground(new java.awt.Color(153, 153, 153));
-        btnReport.setText("Report");
+        btnReport.setBackground(new java.awt.Color(51, 51, 51));
+        btnReport.setFont(new java.awt.Font("Imprint MT Shadow", 0, 14)); // NOI18N
+        btnReport.setForeground(new java.awt.Color(255, 255, 255));
+        btnReport.setText("Load Report");
         btnReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReportActionPerformed(evt);
             }
         });
 
-        btnExportPDF.setBackground(new java.awt.Color(153, 153, 153));
+        btnExportPDF.setBackground(new java.awt.Color(51, 51, 51));
+        btnExportPDF.setFont(new java.awt.Font("Imprint MT Shadow", 0, 14)); // NOI18N
+        btnExportPDF.setForeground(new java.awt.Color(255, 255, 255));
         btnExportPDF.setText("Cetak PDF");
         btnExportPDF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -124,7 +143,9 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
             }
         });
 
-        btnExcel.setBackground(new java.awt.Color(153, 153, 153));
+        btnExcel.setBackground(new java.awt.Color(51, 51, 51));
+        btnExcel.setFont(new java.awt.Font("Imprint MT Shadow", 0, 14)); // NOI18N
+        btnExcel.setForeground(new java.awt.Color(255, 255, 255));
         btnExcel.setText("Cetak Excel");
         btnExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -132,30 +153,35 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
             }
         });
 
+        jLabel4.setFont(new java.awt.Font("Imprint MT Shadow", 1, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Tanggal Tunggal");
+
         javax.swing.GroupLayout btnExportExcelLayout = new javax.swing.GroupLayout(btnExportExcel);
         btnExportExcel.setLayout(btnExportExcelLayout);
         btnExportExcelLayout.setHorizontalGroup(
             btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(btnExportExcelLayout.createSequentialGroup()
                 .addGroup(btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnExportExcelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnReport)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnExportPDF)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnExcel))
                     .addGroup(btnExportExcelLayout.createSequentialGroup()
-                        .addGap(106, 106, 106)
+                        .addGap(26, 26, 26)
                         .addGroup(btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnExportPDF)
-                            .addComponent(btnReport)
-                            .addComponent(btnExcel)))
-                    .addGroup(btnExportExcelLayout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(btnExportExcelLayout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addGroup(btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(dcTanggalAkhir, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
                                 .addComponent(jLabel2)
-                                .addGap(30, 30, 30)
-                                .addComponent(dcTanggalAwal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(btnExportExcelLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, Short.MAX_VALUE)
-                                .addComponent(dcTanggalAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(49, Short.MAX_VALUE))
+                                .addComponent(dcTanggalTunggal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel4)
+                                .addComponent(dcTanggalAwal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         btnExportExcelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnExcel, btnExportPDF, btnReport});
@@ -163,23 +189,30 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
         btnExportExcelLayout.setVerticalGroup(
             btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(btnExportExcelLayout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(dcTanggalAwal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(22, 22, 22)
-                .addGroup(btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addComponent(dcTanggalAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
-                .addComponent(btnReport)
+                .addContainerGap(8, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dcTanggalTunggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnExportPDF)
-                .addGap(26, 26, 26)
-                .addComponent(btnExcel)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dcTanggalAwal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dcTanggalAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(70, 70, 70)
+                .addGroup(btnExportExcelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnExcel)
+                    .addComponent(btnExportPDF)
+                    .addComponent(btnReport))
+                .addContainerGap())
         );
 
+        jScrollPane1.setBackground(new java.awt.Color(102, 102, 102));
+
+        tblReport.setBackground(new java.awt.Color(102, 102, 102));
+        tblReport.setForeground(new java.awt.Color(255, 255, 255));
         tblReport.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -210,10 +243,10 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnExportExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -231,115 +264,154 @@ private void loadLaporanToTable(List<Transaksi> laporan) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
-    try {
-        if (dcTanggalAwal.getDate() == null || dcTanggalAkhir.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Tanggal Awal dan Akhir tidak boleh kosong!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        Date tanggalAwal = dcTanggalAwal.getDate();
-        Date tanggalAkhir = dcTanggalAkhir.getDate();
+        try {
+            // Validasi Input Bertumpuk
+            if ((dcTanggalTunggal.getDate() != null) &&
+                (dcTanggalAwal.getDate() != null || dcTanggalAkhir.getDate() != null)) {
+                JOptionPane.showMessageDialog(this, 
+                    "Isi hanya salah satu filter: Tanggal Tunggal atau Rentang Tanggal (Awal dan Akhir)", 
+                    "Peringatan", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-        List<Transaksi> laporan = transaksiDAO.getLaporan(tanggalAwal, tanggalAkhir);
-        loadLaporanToTable(laporan);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }    // TODO add your handling code here:
+            // Validasi Rentang Tanggal
+            if (dcTanggalAwal.getDate() != null && dcTanggalAkhir.getDate() != null) {
+                Date tanggalAwal = dcTanggalAwal.getDate();
+                Date tanggalAkhir = dcTanggalAkhir.getDate();
+
+                if (tanggalAwal.after(tanggalAkhir)) {
+                    JOptionPane.showMessageDialog(this, "Tanggal awal tidak boleh setelah tanggal akhir!", 
+                            "Peringatan", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                List<Transaksi> laporan = transaksiDAO.getLaporanByRentangTanggal(
+                    new java.sql.Date(tanggalAwal.getTime()), 
+                    new java.sql.Date(tanggalAkhir.getTime())
+                );
+                loadLaporanToTable(laporan);
+                return;
+            }
+
+            // Validasi Tanggal Tunggal
+            if (dcTanggalTunggal.getDate() != null) {
+                Date tanggalTunggal = dcTanggalTunggal.getDate();
+                List<Transaksi> laporan = transaksiDAO.getLaporanByTanggalTunggal(
+                    new java.sql.Date(tanggalTunggal.getTime())
+                );
+                loadLaporanToTable(laporan);
+                return;
+            }
+
+            // Validasi Jika Tidak Ada Input
+            JOptionPane.showMessageDialog(this, "Pilih salah satu filter tanggal untuk menampilkan laporan!", 
+                    "Peringatan", JOptionPane.WARNING_MESSAGE);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }    // TODO add your handling code here:
     }//GEN-LAST:event_btnReportActionPerformed
 
-private void saveToPDF() {
-    // Nama file PDF yang akan disimpan
-    String fileName = new Date().getTime() + "_Report.pdf";
+    private void saveToPDF() {
+        // Membuat nama file berdasarkan tanggal dan waktu
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String formattedDate = formatter.format(new Date());
+        String fileName = "Report_" + formattedDate + ".pdf";
 
-    try {
-        // Membuat objek Document untuk PDF dengan ukuran halaman A4
-        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        try {
+            // Membuat objek Document untuk PDF dengan ukuran halaman A4
+            com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
 
-        // Menghubungkan dokumen dengan FileOutputStream menggunakan PdfWriter
-        PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            // Menghubungkan dokumen dengan FileOutputStream menggunakan PdfWriter
+            PdfWriter.getInstance(document, new FileOutputStream(fileName));
 
-        // Membuka dokumen untuk penulisan
-        document.open();
+            // Membuka dokumen untuk penulisan
+            document.open();
 
-        // Menambahkan judul ke PDF dengan font tebal dan ukuran 16
-        com.lowagie.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
-        com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("Laporan Data Thrift", titleFont);
-        title.setAlignment(Element.ALIGN_CENTER); // Mengatur judul rata tengah
-        document.add(title);
+            // Menambahkan judul ke PDF dengan font tebal dan ukuran 16
+            com.lowagie.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
+            com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("Laporan Data Thrift", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER); // Mengatur judul rata tengah
+            document.add(title);
 
-        // Menambahkan spasi sebelum tabel
-        document.add(new com.lowagie.text.Paragraph(" "));
-        document.add(new com.lowagie.text.Paragraph(" ")); // Spasi tambahan
+            // Menambahkan spasi sebelum tabel
+            document.add(new com.lowagie.text.Paragraph(" "));
+            document.add(new com.lowagie.text.Paragraph(" ")); // Spasi tambahan
 
-        // Membuat tabel dengan jumlah kolom sesuai dengan tabel
-        int columnCount = tblReport.getColumnCount();
-        com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(columnCount);
-        table.setWidthPercentage(100); // Mengatur lebar tabel agar memenuhi halaman
+            // Membuat tabel dengan jumlah kolom sesuai dengan tabel
+            int columnCount = tblReport.getColumnCount();
+            com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(columnCount);
+            table.setWidthPercentage(100); // Mengatur lebar tabel agar memenuhi halaman
 
-        // Menambahkan header ke tabel
-        for (int i = 0; i < columnCount; i++) {
-            com.lowagie.text.pdf.PdfPCell headerCell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(tblReport.getColumnName(i)));
-            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Rata tengah untuk header
-            headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);  // Rata tengah vertikal
-            table.addCell(headerCell); // Menambahkan header ke tabel
-        }
-
-        // Menambahkan data dari `tblReport` ke tabel PDF
-        for (int i = 0; i < tblReport.getRowCount(); i++) { // Iterasi baris
-            for (int j = 0; j < columnCount; j++) { // Iterasi kolom
-                Object cellValue = tblReport.getValueAt(i, j);
-                com.lowagie.text.pdf.PdfPCell dataCell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(cellValue == null ? "" : cellValue.toString()));
-                dataCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Rata tengah untuk data
-                dataCell.setVerticalAlignment(Element.ALIGN_MIDDLE);  // Rata tengah vertikal
-                table.addCell(dataCell); // Menambahkan data ke tabel
+            // Menambahkan header ke tabel
+            for (int i = 0; i < columnCount; i++) {
+                com.lowagie.text.pdf.PdfPCell headerCell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(tblReport.getColumnName(i)));
+                headerCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Rata tengah untuk header
+                headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);  // Rata tengah vertikal
+                table.addCell(headerCell); // Menambahkan header ke tabel
             }
+
+            // Menambahkan data dari `tblReport` ke tabel PDF
+            for (int i = 0; i < tblReport.getRowCount(); i++) { // Iterasi baris
+                for (int j = 0; j < columnCount; j++) { // Iterasi kolom
+                    Object cellValue = tblReport.getValueAt(i, j);
+                    com.lowagie.text.pdf.PdfPCell dataCell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(cellValue == null ? "" : cellValue.toString()));
+                    dataCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Rata tengah untuk data
+                    dataCell.setVerticalAlignment(Element.ALIGN_MIDDLE);  // Rata tengah vertikal
+                    table.addCell(dataCell); // Menambahkan data ke tabel
+                }
+            }
+
+            // Menambahkan tabel ke dokumen PDF
+            document.add(table);
+
+            // Menutup dokumen setelah selesai
+            document.close();
+
+            // Menampilkan pesan sukses
+            JOptionPane.showMessageDialog(this, "Laporan berhasil disimpan ke " + fileName, "Sukses", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            // Menampilkan pesan error jika terjadi masalah saat menyimpan data
+            JOptionPane.showMessageDialog(this, "Error menyimpan laporan ke PDF: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Menambahkan tabel ke dokumen PDF
-        document.add(table);
-
-        // Menutup dokumen setelah selesai
-        document.close();
-
-        // Menampilkan pesan sukses
-        JOptionPane.showMessageDialog(this, "Laporan berhasil disimpan ke " + fileName, "Sukses", JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception e) {
-        // Menampilkan pesan error jika terjadi masalah saat menyimpan data
-        JOptionPane.showMessageDialog(this, "Error menyimpan laporan ke PDF: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
-}
+
 
     
     private void btnExportPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportPDFActionPerformed
         saveToPDF();// TODO add your handling code here:
     }//GEN-LAST:event_btnExportPDFActionPerformed
 
-private void saveToCSV() {
-    // Get the current date to append to the file name (optional)
-    String fileName = new Date().getTime()+"Report.csv";
-    
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-        // Write the header row
-        writer.write("ID Transaksi, Jenis Transaksi, Kode Barang , Jumlah, Tanggal");
-        writer.newLine();
+    private void saveToCSV() {
+        // Membuat nama file berdasarkan tanggal dan waktu
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String formattedDate = formatter.format(new Date());
+        String fileName = "Report_" + formattedDate + ".csv";
 
-        // Write data from the table
-        for (int i = 0; i < tblReport.getRowCount(); i++) {
-            StringBuilder row = new StringBuilder();
-            for (int j = 0; j < tblReport.getColumnCount(); j++) {
-                // Append each cell value followed by a comma, except for the last one
-                row.append(tblReport.getValueAt(i, j));
-                if (j < tblReport.getColumnCount() - 1) {
-                    row.append(",");
-                }
-            }
-            writer.write(row.toString());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            // Write the header row
+            writer.write("ID Transaksi, Jenis Transaksi, Kode Barang, Jumlah, Tanggal");
             writer.newLine();
+
+            // Write data from the table
+            for (int i = 0; i < tblReport.getRowCount(); i++) {
+                StringBuilder row = new StringBuilder();
+                for (int j = 0; j < tblReport.getColumnCount(); j++) {
+                    // Append each cell value followed by a comma, except for the last one
+                    row.append(tblReport.getValueAt(i, j));
+                    if (j < tblReport.getColumnCount() - 1) {
+                        row.append(",");
+                    }
+                }
+                writer.write(row.toString());
+                writer.newLine();
+            }
+            JOptionPane.showMessageDialog(this, "Data berhasil disimpan ke " + fileName, "Sukses", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error menyimpan data ke CSV: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        JOptionPane.showMessageDialog(this, "Data saved to " + fileName);
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error saving data to CSV: " + e.getMessage());
     }
-}    
+    
     
     private void btnExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcelActionPerformed
         saveToCSV();   // TODO add your handling code here:
@@ -387,9 +459,11 @@ private void saveToCSV() {
     private javax.swing.JButton btnReport;
     private com.toedter.calendar.JDateChooser dcTanggalAkhir;
     private com.toedter.calendar.JDateChooser dcTanggalAwal;
+    private com.toedter.calendar.JDateChooser dcTanggalTunggal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
