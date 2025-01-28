@@ -25,30 +25,66 @@ public class MainFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jToggleButton1 = new javax.swing.JToggleButton();
-        jPanel1 = new javax.swing.JPanel();
-        btnBarangFrame = new javax.swing.JButton();
-        btnTransaksiFrame = new javax.swing.JButton();
-        btnLaporanFrame = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        btnBarangFrame = new javax.swing.JButton();
+        btnLaporanFrame = new javax.swing.JButton();
+        btnTransaksiFrame = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         jToggleButton1.setText("jToggleButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel2.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel2.setPreferredSize(new java.awt.Dimension(686, 50));
+
+        jLabel1.setFont(new java.awt.Font("Imprint MT Shadow", 3, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("My Thrift Store");
+        jPanel2.add(jLabel1);
+
+        getContentPane().add(jPanel2, java.awt.BorderLayout.NORTH);
+
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
+        jPanel1.setPreferredSize(new java.awt.Dimension(400, 500));
+        jPanel1.setLayout(new java.awt.GridBagLayout());
 
         btnBarangFrame.setBackground(new java.awt.Color(51, 51, 51));
         btnBarangFrame.setFont(new java.awt.Font("Imprint MT Shadow", 0, 24)); // NOI18N
         btnBarangFrame.setForeground(new java.awt.Color(255, 255, 255));
-        btnBarangFrame.setText("Barang");
+        btnBarangFrame.setText("  Barang  ");
         btnBarangFrame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBarangFrameActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(35, 35, 35, 35);
+        jPanel1.add(btnBarangFrame, gridBagConstraints);
+
+        btnLaporanFrame.setBackground(new java.awt.Color(51, 51, 51));
+        btnLaporanFrame.setFont(new java.awt.Font("Imprint MT Shadow", 0, 24)); // NOI18N
+        btnLaporanFrame.setForeground(new java.awt.Color(255, 255, 255));
+        btnLaporanFrame.setText(" Laporan ");
+        btnLaporanFrame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLaporanFrameActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(35, 35, 35, 35);
+        jPanel1.add(btnLaporanFrame, gridBagConstraints);
 
         btnTransaksiFrame.setBackground(new java.awt.Color(51, 51, 51));
         btnTransaksiFrame.setFont(new java.awt.Font("Imprint MT Shadow", 0, 24)); // NOI18N
@@ -59,81 +95,25 @@ public class MainFrame extends javax.swing.JFrame {
                 btnTransaksiFrameActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(35, 35, 35, 35);
+        jPanel1.add(btnTransaksiFrame, gridBagConstraints);
 
-        btnLaporanFrame.setBackground(new java.awt.Color(51, 51, 51));
-        btnLaporanFrame.setFont(new java.awt.Font("Imprint MT Shadow", 0, 24)); // NOI18N
-        btnLaporanFrame.setForeground(new java.awt.Color(255, 255, 255));
-        btnLaporanFrame.setText("Laporan");
-        btnLaporanFrame.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLaporanFrameActionPerformed(evt);
-            }
-        });
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        jPanel2.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel3.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel3.setForeground(new java.awt.Color(0, 51, 51));
+        jPanel3.setPreferredSize(new java.awt.Dimension(686, 50));
 
-        jLabel1.setFont(new java.awt.Font("Imprint MT Shadow", 3, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("My Thrift Store");
+        jLabel2.setFont(new java.awt.Font("Imprint MT Shadow", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("2210010618 - Muhammad Ridho");
+        jPanel3.add(jLabel2);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(276, 276, 276)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(275, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(18, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(16, 16, 16))
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(271, 271, 271)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnLaporanFrame)
-                    .addComponent(btnTransaksiFrame)
-                    .addComponent(btnBarangFrame))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnBarangFrame, btnLaporanFrame, btnTransaksiFrame});
-
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(63, 63, 63)
-                .addComponent(btnBarangFrame)
-                .addGap(46, 46, 46)
-                .addComponent(btnTransaksiFrame)
-                .addGap(50, 50, 50)
-                .addComponent(btnLaporanFrame)
-                .addContainerGap(82, Short.MAX_VALUE))
-        );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnBarangFrame, btnLaporanFrame, btnTransaksiFrame});
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -190,8 +170,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnLaporanFrame;
     private javax.swing.JButton btnTransaksiFrame;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 }
